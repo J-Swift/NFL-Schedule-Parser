@@ -6,6 +6,7 @@ class Parser
 
   def parse(game_str)
     matches = REGEX.match game_str
+    return nil unless matches
     adjusted_time = Time.new(2014,nil,nil,
                              (matches[:time_hours].to_i % 12) + 12,
                              matches[:time_mins].to_i)
