@@ -39,5 +39,10 @@ class ParserTest < MiniTest::Unit::TestCase
     validate_parse(game, 'San Francisco 49ers', 'Denver Broncos', '20:30')
     refute game.can_flex?
   end
+
+  def test_handles_noon
+    game = @parser.parse 'Chicago Bears at Detroit Lions, 12:30'
+    validate_parse(game, 'Chicago Bears', 'Detroit Lions', '12:30')
+  end
 end
 
