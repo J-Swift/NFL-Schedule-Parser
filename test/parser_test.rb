@@ -49,5 +49,13 @@ class ParserTest < MiniTest::Unit::TestCase
     game = @parser.parse 'gibberish agoodojrj ofojoj409 j9j 2j11 j9'
     assert_nil game
   end
+
+  def test_handles_st_louis_rams
+    game = @parser.parse 'Minnesota Vikings at St. Louis Rams, 1'
+    validate_parse(game, 'Minnesota Vikings', 'St. Louis Rams', '13:00')
+
+    game = @parser.parse 'St. Louis Rams at Seattle Seahawks, 4:25'
+    validate_parse(game, 'St. Louis Rams', 'Seattle Seahawks', '16:25')
+  end
 end
 
