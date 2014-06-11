@@ -1,4 +1,8 @@
-Game = Struct.new(:home, :away, :time, :can_flex?)
+Game = Struct.new(:home, :away, :time, :flex?) do
+  def can_flex?
+    !!flex?
+  end
+end
 
 # Note that this assumes that all times are EST PM
 class Parser
