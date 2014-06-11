@@ -15,19 +15,29 @@ class ParserTest < MiniTest::Unit::TestCase
     assert_equal expected_time, game.time.strftime('%H:%M')
   end
 
-  def test_parses_normal_1
+  def test_short_time_string
     game = @parser.parse 'Jacksonville Jaguars at Cincinnati Bengals, 1'
     validate_parse(game, 'Jacksonville Jaguars', 'Cincinnati Bengals', '13:00')
   end
 
-  def test_parses_normal_2
+  def test_full_time_string
     game = @parser.parse 'New York Giants at Seattle Seahawks, 4:25'
     validate_parse(game, 'New York Giants', 'Seattle Seahawks', '16:25')
   end
 
-  def test_parses_funky_1
+  def test_extraneous_info
     game = @parser.parse 'Miami Dolphins at Oakland Raiders (LONDON), 1'
     validate_parse(game, 'Miami Dolphins', 'Oakland Raiders', '13:00')
+  end
+
+  def test_flex_schedule
+    game = @parser.parse 'San Francisco 49ers at Denver Broncos, 8:30*'
+    validate_parse(game, 'San Francisco 49ers', 'Denver Broncos', '20:30')
+    assert game.can_flex?
+
+    game = @parser.parse 'San Francisco 49ers at Denver Broncos, 8:30'
+    validate_parse(game, 'San Francisco 49ers', 'Denver Broncos', '20:30')
+    refute game.can_flex?
   end
 end
 
