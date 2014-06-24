@@ -9,7 +9,7 @@ class ParserTest < MiniTest::Unit::TestCase
     @parser = Parser.new
   end
 
-  def validate_parse(game, expected_home, expected_away, expected_time)
+  def validate_parse(game, expected_away, expected_home, expected_time)
     assert_equal expected_home, game.home
     assert_equal expected_away, game.away
     assert_equal expected_time, game.time.strftime('%H:%M')

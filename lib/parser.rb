@@ -6,7 +6,7 @@ end
 
 # Note that this assumes that all times are EST PM
 class Parser
-  REGEX = /(?<home_team>.+) at (?<away_team>\w+\.?( \w+)+).*, (?<time_hours>\d+)(:(?<time_mins>\d+))?(?<is_flex>\*)?/
+  REGEX = /(?<away_team>.+) at (?<home_team>\w+\.?( \w+)+).*, (?<time_hours>\d+)(:(?<time_mins>\d+))?(?<is_flex>\*)?/
 
   def parse(game_str)
     matches = REGEX.match game_str
