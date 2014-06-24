@@ -11,7 +11,16 @@ end
 # St. Louis Rams at San Francisco 49ers, 4:05
 # Detroit Lions at Atlanta Falcons (LONDON), 9:30a
 class Parser
-  REGEX = /(?<away_team>.+) at (?<home_team>\w+\.?( \w+)+).*, (?<time_hours>\d+)(:(?<time_mins>\d+))?(?<is_am>a)?(?<is_flex>\*)?/
+  REGEX = %r{
+    (?<away_team>.+)              # Greedy capture since we can match the 'at' as a delimeter
+    \sat\s
+    (?<home_team>\w+\.?(\s\w+)+)  # More complex matcher due to no reliable signposts
+    .*,\s                         # Note that we throw away anything between the away_team and the comma
+    (?<time_hours>\d+)
+    (:(?<time_mins>\d+))?         # Minutes portion is optional
+    (?<is_am>a)?                  # AM portion is optional
+    (?<is_flex>\*)?               # Flex portion is optional
+  }x
 
   def parse(game_str)
     matches = REGEX.match game_str
