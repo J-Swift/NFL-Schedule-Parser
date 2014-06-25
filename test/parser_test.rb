@@ -9,58 +9,65 @@ class ParserTest < MiniTest::Unit::TestCase
     @parser = Parser.new
   end
 
-  def validate_parse(game, expected_away, expected_home, expected_time)
-    assert_equal expected_home, game.home
-    assert_equal expected_away, game.away
-    assert_equal expected_time, game.time.strftime('%H:%M')
+  def test_short_time_string
+    validate_parse('Jacksonville Jaguars at Cincinnati Bengals, 1',
+                   'Jacksonville Jaguars', 'Cincinnati Bengals', '13:00')
   end
 
-  def test_short_time_string
-    game = @parser.parse 'Jacksonville Jaguars at Cincinnati Bengals, 1'
-    validate_parse(game, 'Jacksonville Jaguars', 'Cincinnati Bengals', '13:00')
+  def test_invalid_parse_returns_nil
+    game = @parser.parse_game 'gibberish agoodojrj ofojoj409 j9j 2j11 j9'
+    assert_nil game
   end
 
   def test_full_time_string
-    game = @parser.parse 'New York Giants at Seattle Seahawks, 4:25'
-    validate_parse(game, 'New York Giants', 'Seattle Seahawks', '16:25')
+    validate_parse('New York Giants at Seattle Seahawks, 4:25',
+                   'New York Giants', 'Seattle Seahawks', '16:25')
   end
 
   def test_extraneous_info
-    game = @parser.parse 'Miami Dolphins at Oakland Raiders (LONDON), 1'
-    validate_parse(game, 'Miami Dolphins', 'Oakland Raiders', '13:00')
+    validate_parse('Miami Dolphins at Oakland Raiders (LONDON), 1',
+                   'Miami Dolphins', 'Oakland Raiders', '13:00')
   end
 
   def test_flex_schedule
-    game = @parser.parse 'San Francisco 49ers at Denver Broncos, 8:30*'
-    validate_parse(game, 'San Francisco 49ers', 'Denver Broncos', '20:30')
+    game = validate_parse('San Francisco 49ers at Denver Broncos, 8:30*',
+                          'San Francisco 49ers', 'Denver Broncos', '20:30')
     assert game.can_flex?
 
-    game = @parser.parse 'San Francisco 49ers at Denver Broncos, 8:30'
-    validate_parse(game, 'San Francisco 49ers', 'Denver Broncos', '20:30')
+    game = validate_parse('San Francisco 49ers at Denver Broncos, 8:30',
+                          'San Francisco 49ers', 'Denver Broncos', '20:30')
     refute game.can_flex?
   end
 
   def test_handles_noon
-    game = @parser.parse 'Chicago Bears at Detroit Lions, 12:30'
-    validate_parse(game, 'Chicago Bears', 'Detroit Lions', '12:30')
-  end
-
-  def test_invalid_parse_returns_nil
-    game = @parser.parse 'gibberish agoodojrj ofojoj409 j9j 2j11 j9'
-    assert_nil game
+    validate_parse('Chicago Bears at Detroit Lions, 12:30',
+                   'Chicago Bears', 'Detroit Lions', '12:30')
   end
 
   def test_handles_st_louis_rams
-    game = @parser.parse 'Minnesota Vikings at St. Louis Rams, 1'
-    validate_parse(game, 'Minnesota Vikings', 'St. Louis Rams', '13:00')
+    validate_parse('Minnesota Vikings at St. Louis Rams, 1',
+                   'Minnesota Vikings', 'St. Louis Rams', '13:00')
 
-    game = @parser.parse 'St. Louis Rams at Seattle Seahawks, 4:25'
-    validate_parse(game, 'St. Louis Rams', 'Seattle Seahawks', '16:25')
+    validate_parse('St. Louis Rams at Seattle Seahawks, 4:25',
+                   'St. Louis Rams', 'Seattle Seahawks', '16:25')
   end
   
   def test_handles_morning_game
-    game = @parser.parse 'Detroit Lions at Atlanta Falcons (LONDON), 9:30a'
-    validate_parse(game, 'Detroit Lions', 'Atlanta Falcons', '09:30')
+    validate_parse('Detroit Lions at Atlanta Falcons (LONDON), 9:30a',
+                   'Detroit Lions', 'Atlanta Falcons', '09:30')
   end
+
+  private
+
+  def validate_parse(str_to_parse, expected_away, expected_home, expected_time)
+    game = @parser.parse_game str_to_parse
+
+    assert_equal expected_home, game.home
+    assert_equal expected_away, game.away
+    assert_equal expected_time, game.time.strftime('%H:%M')
+
+    game
+  end
+
 end
 

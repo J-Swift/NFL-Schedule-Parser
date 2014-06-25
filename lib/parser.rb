@@ -22,11 +22,12 @@ class Parser
     (?<is_flex>\*)?               # Flex portion is optional
   }x
 
-  def parse(game_str)
+  def parse_game(game_str, game_year=2014, game_month=nil, game_day=nil)
     matches = REGEX.match game_str
     return nil unless matches
+
     time_offset = ( matches[:is_am] ? 0 : 12 )
-    adjusted_time = Time.new(2014,nil,nil,
+    adjusted_time = Time.new(game_year, game_month, game_day,
                              (matches[:time_hours].to_i % 12) + time_offset,
                              matches[:time_mins].to_i)
     Game.new(matches[:home_team], matches[:away_team], adjusted_time, matches[:is_flex])
