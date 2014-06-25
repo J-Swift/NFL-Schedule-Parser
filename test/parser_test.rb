@@ -5,18 +5,13 @@ require 'minitest/autorun'
 require 'lib/parser'
 
 class ParserTest < MiniTest::Unit::TestCase
-  def setup
-    @parser = Parser.new
-  end
-
   def test_short_time_string
     validate_parse('Jacksonville Jaguars at Cincinnati Bengals, 1',
                    'Jacksonville Jaguars', 'Cincinnati Bengals', '13:00')
   end
 
   def test_invalid_parse_returns_nil
-    game = @parser.parse_game 'gibberish agoodojrj ofojoj409 j9j 2j11 j9'
-    assert_nil game
+    assert_nil(Parser::parse_game('gibberish agoodojrj ofojoj409 j9j 2j11 j9'))
   end
 
   def test_full_time_string
@@ -60,7 +55,7 @@ class ParserTest < MiniTest::Unit::TestCase
   private
 
   def validate_parse(str_to_parse, expected_away, expected_home, expected_time)
-    game = @parser.parse_game str_to_parse
+    game = Parser::parse_game str_to_parse
 
     assert_equal expected_home, game.home
     assert_equal expected_away, game.away
